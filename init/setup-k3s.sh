@@ -1,6 +1,11 @@
 # Master 설치
 echo "Installing K3s on master..."
-multipass exec k3s-master -- bash -c "curl -sfL https://get.k3s.io | sh -"
+multipass exec k3s-master -- bash -c "curl -sfL https://get.k3s.io | sh -s - server \
+  --flannel-backend=none \
+  --disable-network-policy \
+  --disable traefik \
+  --cluster-init \
+  --node-taint node-role.kubernetes.io/control-plane:NoSchedule"
 
 # Master IP와 토큰 가져오기
 MASTER_IP=$(multipass info k3s-master | grep IPv4 | awk '{print $2}')
